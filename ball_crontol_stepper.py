@@ -22,18 +22,11 @@ logger = RealTimeLogger()
 
 PIDX = PID()
 PIDY = PID()
-camera_port = 0
-cap = cv2.VideoCapture(camera_port)
-cap.set(3, 1280)
-cap.set(4, 720)
 
-get, img = cap.read()
-h, w, _ = img.shape
-
-port_id = '/dev/cu.usbserial-110' 
 # initialise serial interface
-arduino = serial.Serial(port=port_id, baudrate=230400, timeout=0.1)
-
+arduino = serial.Serial()
+arduino.baudrate = 230400
+arduino.port = 'COM3'
 
 maxpitch = 16.5
 maxroll = 15
@@ -41,6 +34,13 @@ target = Position()
 center_point = [640, 360, 2210] # center point of the plate, calibrated
 
 def ball_track(key1, queue):
+    camera_port = 2
+    cap = cv2.VideoCapture(camera_port, cv2.CAP_DSHOW)
+    cap.set(3, 1280)
+    cap.set(4, 720)
+
+    get, img = cap.read()
+    h, w, _ = img.shape
 
     if key1:
         print('Ball tracking is initiated')
@@ -90,9 +90,7 @@ lastY = 999
 def servo_control(key2, queue):
     if key2:
         print('Servo controls are initiated')
-
-    root = Tk()
-    root.resizable(0, 0)
+        arduino.open()
 
     def writeCoord():
         """
@@ -155,7 +153,7 @@ def servo_control(key2, queue):
             angles = bytearray([intang1, fang1, intang2, fang2, intang3, fang3])
             if (ang1 >= 5 and ang2 >= 5 and ang3 >= 5):
                 arduino.write(angles)
-            
+
             velx = float(new_x - lastX)/dt
             vely = float(new_y - lastY)/dt
 
@@ -176,8 +174,7 @@ def servo_control(key2, queue):
 
     while key2:
         writeCoord()
-
-    root.mainloop()  # running loop
+    arduino.close()
 
 if __name__ == '__main__':
 
