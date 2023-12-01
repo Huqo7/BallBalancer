@@ -3,14 +3,15 @@ kp = 0.04
 ki = 0.075
 kd = 0.02
 
-kp = 0.045
-ki = 0.05
-kd = 0.03
+multi = 1.75
+kp = 0.045 * multi
+ki = 0.05 * multi
+kd = 0.03 * multi
 
 class PID:
     prevIntegral = 0
     prevError = 0
-    windup = 10
+    windup = 20
     def regulate(self, target, current, dt):
         e = target-current
 

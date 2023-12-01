@@ -26,18 +26,18 @@ PIDY = PID()
 # initialise serial interface
 arduino = serial.Serial()
 arduino.baudrate = 230400
-arduino.port = 'COM3'
+arduino.port = 'COM7'
 
 maxpitch = 16.5
 maxroll = 15
 target = Position()
-center_point = [640, 360, 2210] # center point of the plate, calibrated
+center_point = [427, 240, 2210] # center point of the plate, calibrated
 
 def ball_track(key1, queue):
-    camera_port = 2
+    camera_port = 0
     cap = cv2.VideoCapture(camera_port, cv2.CAP_DSHOW)
-    cap.set(3, 1280)
-    cap.set(4, 720)
+    cap.set(3, 854)
+    cap.set(4, 480)
 
     get, img = cap.read()
     h, w, _ = img.shape
@@ -72,10 +72,10 @@ def ball_track(key1, queue):
 
         imgStack = cvzone.stackImages([imgContour], 1, 1)
         #imgStack = cvzone.stackImages([img,imgColor, mask, imgContour],2,0.5) #use for calibration and correction
-        cv2.circle(imgStack, (x, y), 290, (255, 255, 255), 2)
-        cv2.circle(imgStack, (x, y), 30, (255, 255, 255), 1)
-        cv2.circle(imgStack, (center_point[0], center_point[1]), 290, (255, 0, 255), 2)
-        cv2.circle(imgStack, (center_point[0], center_point[1]), 30, (255, 0, 255), 1)
+        cv2.circle(imgStack, (x, y), 193, (255, 255, 255), 2)
+        cv2.circle(imgStack, (x, y), 22, (255, 255, 255), 1)
+        cv2.circle(imgStack, (center_point[0], center_point[1]), 193, (255, 0, 255), 2)
+        cv2.circle(imgStack, (center_point[0], center_point[1]), 22, (255, 0, 255), 1)
 
         cv2.circle(imgStack, (center_point[0]+target.target[0],center_point[1]+target.target[1]), 5, (0, 0, 255), -1)
         cv2.imshow("Image", imgStack)
